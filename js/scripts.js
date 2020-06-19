@@ -70,7 +70,6 @@ function displayContactDetails(addressBookToDisplay) {
   let htmlForContactInfo = "";
   addressBookToDisplay.contacts.forEach(function (contact) {
     htmlForContactInfo += "<li id=" + contact.id + ">" + contact.firstName + " " + contact.lastName + " - " + contact.emailAddress + "<br>" + contact.physicalAddress.streetAddress + "</li>";
-
   })
   contactList.html(htmlForContactInfo);
 };
@@ -94,13 +93,13 @@ function showContact(contactId) {
   $(".phone-number").html(contact.phoneNumber);
   $(".email-address").html(contact.emailAddress);
   $(".street-address").html(contact.physicalAddress.streetAddress);
-  $(".zipcode").html(contact.physicalAddress.zipcode);
+  $(".zipcode").html(contact.physicalAddress.zipCode);
   $(".state").html(contact.physicalAddress.state);
   $(".country").html(contact.physicalAddress.country);
   $(".address-type").html(contact.physicalAddress.type);
   let buttons = $("#buttons");
   buttons.empty();
-  buttons.append("<button class='deleteButton' id=" + + contact.id + ">Delete<button>");
+  buttons.append("<button class='deleteButton' id=" + + contact.id + ">Delete</button>");
 }
 
 $(document).ready(function () {
@@ -123,14 +122,10 @@ $(document).ready(function () {
     let newPhysicalAddress = new PhysicalAddress(inputtedStreetAddress, inputtedZipcode, inputtedState, inputtedCountry, inputtedAddressType);
     let newContact = new Contact(inputtedFirstName, inputtedLastName, inputtedPhoneNumber, inputtedEmailAddress, newPhysicalAddress);
 
-    console.log(newPhysicalAddress, newContact);
     $("input.form-control").val("");
-    // $("input#new-last-name").val("");
-    // $("input#new-phone-number").val("");
-    // $("input#new-email-address").val("");
-    // $("input#new-physical-address").val("");
 
-    // console.log(addressBook.contacts)
+    addressBook.addContact(newContact);
     displayContactDetails(addressBook);
+    
   })
 })
