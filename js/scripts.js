@@ -70,6 +70,7 @@ function displayContactDetails(addressBookToDisplay) {
   let htmlForContactInfo = "";
   addressBookToDisplay.contacts.forEach(function (contact) {
     htmlForContactInfo += "<li id=" + contact.id + ">" + contact.firstName + " " + contact.lastName + " - " + contact.emailAddress + "<br>" + contact.physicalAddress.streetAddress + "</li>";
+    
   })
   contactList.html(htmlForContactInfo);
 };
@@ -85,18 +86,37 @@ function attachContactListeners() {
   });
 }
 
+String.prototype.capitalize = function() {
+  return this.charAt(0).toUpperCase() + this.slice(1)
+}
+
 function showContact(contactId) {
   const contact = addressBook.findContact(contactId)
+  const address = contact.physicalAddress;
+  const addressKeys = Object.keys(address);
+  let addressString = " ";
+  addressKeys.forEach(function (key) {
+    addressString = addressString.concat(key + ": " + address[key] + "<br>");
+  });
+  const contactKeys = Object.keys(contact);
+  let contactString = " "
+  contactKeys.forEach(function (key) {
+    if (typeof contact[key] == "string") {
+      formattedKey = key.replace(/([A-Z])/g, ' $1').trim();
+      contactString = contactString.concat(formattedKey + ": " + contact[key] + "<br>");
+    }
+  });
   $("#show-contact").show();
-  $(".first-name").html(contact.firstName);
-  $(".last-name").html(contact.lastName);
-  $(".phone-number").html(contact.phoneNumber);
-  $(".email-address").html(contact.emailAddress);
-  $(".street-address").html(contact.physicalAddress.streetAddress);
-  $(".zipcode").html(contact.physicalAddress.zipCode);
-  $(".state").html(contact.physicalAddress.state);
-  $(".country").html(contact.physicalAddress.country);
-  $(".address-type").html(contact.physicalAddress.type);
+  $("#show-contact").html(contactString + addressString);
+  // $(".first-name").html(contact.firstName);
+  // $(".last-name").html(contact.lastName);
+  // $(".phone-number").html(contact.phoneNumber);
+  // $(".email-address").html(contact.emailAddress);
+  // $(".street-address").html(contact.physicalAddress.streetAddress);
+  // $(".zipcode").html(contact.physicalAddress.zipCode);
+  // $(".state").html(contact.physicalAddress.state);
+  // $(".country").html(contact.physicalAddress.country);
+  // $(".address-type").html(contact.physicalAddress.type);
   let buttons = $("#buttons");
   buttons.empty();
   buttons.append("<button class='deleteButton' id=" + + contact.id + ">Delete</button>");
@@ -115,10 +135,7 @@ $(document).ready(function () {
     const inputtedState = $("input#new-state").val();
     const inputtedCountry = $("input#new-country").val();
     const inputtedAddressType = $("#new-address-type option:selected").val();
-    // Idea I had about collecting form input values with a function, might revisit later 6/17/20
-    // const inputtedPhysicalAddress = function() {
-    //   $(".form-group.physical-address .form-control").forEach
-    // }
+
     let newPhysicalAddress = new PhysicalAddress(inputtedStreetAddress, inputtedZipcode, inputtedState, inputtedCountry, inputtedAddressType);
     let newContact = new Contact(inputtedFirstName, inputtedLastName, inputtedPhoneNumber, inputtedEmailAddress, newPhysicalAddress);
 
@@ -126,6 +143,6 @@ $(document).ready(function () {
 
     addressBook.addContact(newContact);
     displayContactDetails(addressBook);
-    
+
   })
 })
